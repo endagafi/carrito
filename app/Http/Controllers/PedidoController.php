@@ -14,7 +14,7 @@ class PedidoController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(Pedido::with(['producto'])->get(),200);
     }
 
     /**
@@ -22,9 +22,16 @@ class PedidoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function status(Pedido $order)
     {
-        //
+        $order->status = true;
+        $status = $order->save();
+
+        return response()->json([
+            'status'    => $status,
+            'data'      => $order,
+            'message'   => $status ? 'Pedido Concretado!' : 'Error Concretando Pedido'
+        ]);
     }
 
     /**
@@ -35,7 +42,19 @@ class PedidoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $order = Pedido::create([
+            'id_producto' => $request->product_id,
+            'id_user' => Auth::id(),
+            'id_vendedor' => $request->id_vendedor,
+            'stock' => $request->stock,
+            'direccion' => $request->direccion
+        ]);
+
+        return response()->json([
+            'status' => (bool) $order,
+            'data'   => $order,
+            'message' => $order ? 'Pedido Realizado!' : 'Error Realizando Pedido'
+        ]);
     }
 
     /**
@@ -46,7 +65,7 @@ class PedidoController extends Controller
      */
     public function show(Pedido $pedido)
     {
-        //
+        return response()->json($pedido,200);
     }
 
     /**
@@ -69,7 +88,14 @@ class PedidoController extends Controller
      */
     public function update(Request $request, Pedido $pedido)
     {
-        //
+        $status = $pedido->update(
+            $request->only(['stock'])
+        );
+
+        return response()->json([
+            'status' => $status,
+            'message' => $status ? 'Pedido Actualizado!' : 'Error Actualizando Pedido'
+        ]);
     }
 
     /**
@@ -80,6 +106,11 @@ class PedidoController extends Controller
      */
     public function destroy(Pedido $pedido)
     {
-        //
+        $status = $order->delete();
+
+        return response()->json([
+            'status' => $status,
+            'message' => $status ? 'Order Deleted!' : 'Error Deleting Order'
+        ]);
     }
 }

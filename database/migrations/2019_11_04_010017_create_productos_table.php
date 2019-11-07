@@ -20,6 +20,7 @@ class CreateProductosTable extends Migration
             $table->unsignedInteger('stock')->default(0);
             $table->double('precio');
             $table->string('imagen');
+            $table->unsignedInteger('id_user');
             $table->timestamps();
             $table->softDeletes();
         });

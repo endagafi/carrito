@@ -15,6 +15,7 @@ class CreateAccessoriosTable extends Migration
     {
         Schema::create('accessorios', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedInteger('id_producto');
             $table->string('nombre');
             $table->string('detalle');
             $table->unsignedInteger('stock')->default(0);
